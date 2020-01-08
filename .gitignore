@@ -57,4 +57,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+Debug/
+x64/
 >>>>>>> 0093140d821ae38c4a0f435d9854c12718c21766
