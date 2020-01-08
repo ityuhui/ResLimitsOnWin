@@ -73,15 +73,38 @@ int queryMemoryLimits(HANDLE job)
     return 0;
 }
 
+int attatch(HANDLE job, HANDLE processHandler)
+{
+    BOOL alreadyInJob = FALSE;
+    BOOL result = ::IsProcessInJob(processHandler, NULL, &alreadyInJob);
+    
+    if (!alreadyInJob) {
+        BOOL success = ::AssignProcessToJobObject(job, processHandler);
+    }
+
+    return 0;
+}
+
 int main()
 {
     std::string jobName = "job1";
+    std::string path = "C:\\test.exe";
 
-    HANDLE job1 = CreateJobObject(NULL, stringToLPCWSTR(jobName));
+    HANDLE job = CreateJobObject(NULL, stringToLPCWSTR(jobName));
 
-    setMemoryLimits(job1);
+    setMemoryLimits(job);
 
-    queryMemoryLimits(job1);
+    queryMemoryLimits(job);
+
+    STARTUPINFO pStaus = { sizeof(pStaus) };
+    PROCESS_INFORMATION pInfo;
+    if (CreateProcess(stringToLPCWSTR(path), NULL, NULL, NULL, FALSE, CREATE_NEW_CONSOLE | CREATE_SUSPENDED, NULL, NULL, &pStaus, &pInfo)) {
+        attatch(job, pInfo.hProcess);
+    } else {
+
+    }
+
+    CloseHandle(job);
 
     return 0;
 }
